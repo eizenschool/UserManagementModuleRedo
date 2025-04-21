@@ -92,7 +92,9 @@ public class UserManagementModule {
         while (adminActive) {
             System.out.println("\n=== Admin Menu ===");
             System.out.println("1. View Staff");
-            System.out.println("2. Logout");
+            System.out.println("2. Add Staff");
+            System.out.println("3. Delete Staff");
+            System.out.println("4. Logout");
             System.out.print("Enter choice: ");
             int choice = input.nextInt();
             input.nextLine();
@@ -107,8 +109,42 @@ public class UserManagementModule {
                         }
                     }
                     break;
-
+                    
                 case 2:
+                    System.out.print("Enter new staff username: ");
+                    String newUsername = input.nextLine();
+                    System.out.print("Enter new staff password: ");
+                    String newPassword = input.nextLine();
+                    
+                    //Check for duplicate username
+                    boolean exists = false;
+                    for(User user : staffList){
+                        if (user.getUsername().equals(newUsername)){
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (exists) {
+                        System.out.println("Staff username already exists.");
+                    } else {
+                        staffList.add(new StaffUser(newUsername, newPassword));
+                        System.out.println("Staff added successfully.");
+                    }
+                    break;
+                    
+                case 3:
+                    System.out.print("Enter staff username to delete: ");
+                    String deleteUsername = input.nextLine();
+                    boolean removed = false;
+                    for(int i = 0; i<staffList.size(); i++){
+                        if(staffList.get(i).getUsername().equals(deleteUsername)){
+                            staffList.remove(i);
+                            removed = true;
+                            break;
+                        }
+                    }
+
+                case 4:
                     adminActive = false;
                     System.out.println("Logging out...");
                     break;
@@ -133,25 +169,27 @@ public class UserManagementModule {
             input.nextLine();
 
             switch (choice) {
-                case 1:
-                    System.out.print("Enter name: ");
-                    String name = input.nextLine();
-                    System.out.print("Enter phone: ");
-                    String phone = input.nextLine();
-                    String tier;
-                    boolean added = false;
-                    do {
-                        System.out.print("Enter tier (Silver/Gold/Platinum): ");
-                        tier = input.nextLine();
-                        added = manager.addMember(name, phone, tier);
-                        System.out.println(added ? "Member added." : "Invalid tier.");
-                    } while (!added);
-                    break;
-
+                case 1: //Add Member
+                   boolean added = false;
+                   while(!added){
+                       System.out.print("Enter name: ");
+                       String name = input.nextLine();
+                       System.out.print("Enter phone: ");
+                       String phone = input.nextLine();
+                       System.out.print("Enter tier (Silver/Gold/Platinum): ");
+                       String tier = input.nextLine();
+                       
+                       added = manager.addMember(name, phone, tier);
+                       if(added){
+                           System.out.println("Member added successfully.\n");
+                       } else {
+                           System.out.println("Member already exists or invalid tier.");
+                       }
+                   }
                 case 2:
                     ArrayList<MemberUser> members = manager.getAllMembers();
                     if (members.isEmpty()) {
-                        System.out.println("No members.");
+                        System.out.println("No members T^T.");
                     } else {
                         for (MemberUser m : members) {
                             System.out.println(m);
