@@ -225,9 +225,11 @@ public class UserManagementModule {
                     } while (!validTier);
 
                     boolean added = manager.addMember(name, phone, tier);
-                    System.out.println(added ? "Member added!" : "Failed to add.");
-                    break;
-
+                    if(added){
+                        System.out.println("Member added!");
+                    }else{
+                        System.out.println("Failed to add");
+                    } break;
                 case 2:
                     ArrayList<MemberUser> members = manager.getAllMembers();
                     if (members.isEmpty()) {
@@ -243,7 +245,11 @@ public class UserManagementModule {
                     System.out.print("Enter phone number to delete: ");
                     String delPhone = input.nextLine();
                     boolean deleted = manager.deleteMember(delPhone);
-                    System.out.println(deleted ? "Member deleted." : "Member not found.");
+                    if(deleted){
+                        System.out.println("Member deleted.");
+                    }else {
+                        System.out.println("Member not found.");
+                    }
                     break;
 
                 case 4:
