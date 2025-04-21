@@ -8,7 +8,7 @@ package usermanagementmodule;
  *
  * @author clogg
  */
-public abstract class User {
+public class User {
     protected String username;
     protected String password;
     
@@ -24,7 +24,4 @@ public abstract class User {
     public boolean checkPassword(String inputPassword) {
         return this.password.equals(inputPassword);
     }
-
-    // 🔽 Every user type must implement their own menu
-    public abstract void displayMenu();
 }

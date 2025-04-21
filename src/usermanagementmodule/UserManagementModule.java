@@ -39,6 +39,7 @@ public class UserManagementModule {
                     String adminPass = input.nextLine();
 
                     if (admin.getUsername().equals(adminUser) && admin.checkPassword(adminPass)) {
+                        admin.showRole(); // Optional: "Logged in as Admin"
                         handleAdminMenu(input, staffList);
                     } else {
                         System.out.println("Invalid admin credentials.");
@@ -60,6 +61,7 @@ public class UserManagementModule {
                     }
 
                     if (loggedIn != null) {
+                        loggedIn.showRole(); // Optional: shows ID
                         handleStaffMenu(input, loggedIn, membershipManager);
                     } else {
                         System.out.println("Invalid staff credentials.");
@@ -79,7 +81,8 @@ public class UserManagementModule {
         input.close();
     }
 
-    private static void handleAdminMenu(Scanner input, ArrayList<StaffUser> staffList) {
+    // ---------- Admin Menu ----------
+    public static void handleAdminMenu(Scanner input, ArrayList<StaffUser> staffList) {
         boolean adminActive = true;
         while (adminActive) {
             System.out.println("\n=== Admin Menu ===");
@@ -97,7 +100,7 @@ public class UserManagementModule {
                         System.out.println("No staff accounts found.");
                     } else {
                         for (StaffUser staff : staffList) {
-                            System.out.println("Staff: " + staff.getUsername());
+                            System.out.println(staff); // uses overridden toString() with ID
                         }
                     }
                     break;
@@ -149,7 +152,8 @@ public class UserManagementModule {
         }
     }
 
-    private static void handleStaffMenu(Scanner input, StaffUser staff, MembershipManager manager) {
+    // ---------- Staff Menu ----------
+    public static void handleStaffMenu(Scanner input, StaffUser staff, MembershipManager manager) {
         boolean staffActive = true;
         while (staffActive) {
             System.out.println("\n=== Staff Menu ===");
@@ -182,7 +186,8 @@ public class UserManagementModule {
         }
     }
 
-    private static void handleMemberSubmenu(Scanner input, MembershipManager manager) {
+    // ---------- Member Menu ----------
+    public static void handleMemberSubmenu(Scanner input, MembershipManager manager) {
         boolean active = true;
         while (active) {
             System.out.println("\n--- Manage Members ---");
@@ -220,7 +225,7 @@ public class UserManagementModule {
                     } while (!validTier);
 
                     boolean added = manager.addMember(name, phone, tier);
-                    System.out.println(added ? "Member added!" : " Failed to add.");
+                    System.out.println(added ? "Member added!" : "Failed to add.");
                     break;
 
                 case 2:
@@ -251,5 +256,4 @@ public class UserManagementModule {
         }
     }
 }
-    
 

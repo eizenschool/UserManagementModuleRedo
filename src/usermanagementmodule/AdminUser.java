@@ -8,19 +8,22 @@ package usermanagementmodule;
  *
  * @author clogg
  */
-public class AdminUser extends User{
-    
+public class AdminUser extends User {
+
     public AdminUser(String username, String password) {
         super(username, password);
     }
 
-    @Override
-    public void displayMenu() {
-        System.out.println("\n=== Admin Menu ===");
-        System.out.println("1. View Staff");
-        System.out.println("2. Logout");
+    public boolean canManageStaff() {
+        return true;
     }
 
-    // Later: add methods like manageStaff(...) that link to AdminManager
-}
+    public void showRole() {
+        System.out.println("Logged in as Admin");
+    }
 
+    @Override
+    public String toString() {
+        return "Role: Admin, Username: " + username;
+    }
+}

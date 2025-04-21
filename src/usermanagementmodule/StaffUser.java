@@ -3,22 +3,33 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package usermanagementmodule;
-
 /**
  *
  * @author clogg
  */
-public class StaffUser extends User{
+public class StaffUser extends User {
+    private static int nextId = 1001;  // Auto-increment base ID
+    private final int staffId;
+
     public StaffUser(String username, String password) {
         super(username, password);
+        this.staffId = nextId++;
+    }
+
+    public int getStaffId() {
+        return staffId;
+    }
+
+    public boolean canManageMembers() {
+        return true;
+    }
+
+    public void showRole() {
+        System.out.println("Logged in as Staff (ID: " + staffId + ")");
     }
 
     @Override
-    public void displayMenu() {
-        System.out.println("\n=== Staff Menu ===");
-        System.out.println("1. Manage Members");
-        System.out.println("2. Logout");
+    public String toString() {
+        return "ID: " + staffId + ", Username: " + username;
     }
-
-    // Later: add methods that call MembershipManager logic
 }
