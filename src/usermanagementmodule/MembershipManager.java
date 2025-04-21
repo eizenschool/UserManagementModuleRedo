@@ -15,38 +15,12 @@ public class MembershipManager {
         memberList = new ArrayList<>();
     }
 
-    // Add member with full validation: tier + duplicate phone
     public boolean addMember(String name, String phoneNo, String tier) {
         if (!isValidTier(tier) || memberExists(phoneNo)) {
             return false;
         }
-        
-        //Normalize name and tier
-        name = name.toUpperCase();  
-        tier = tier.toUpperCase(); 
-        memberList.add(new MemberUser(name, phoneNo, tier));
+        memberList.add(new MemberUser(name, phoneNo, tier.toUpperCase()));
         return true;
-    }
-
-    // Helper method to check if phone number already exists
-    private boolean memberExists(String phoneNo) {
-        for (MemberUser m : memberList) {
-            if (m.getPhoneNo().equals(phoneNo)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Tier check logic
-    private boolean isValidTier(String tier) {
-        return tier.equalsIgnoreCase("Silver") ||
-               tier.equalsIgnoreCase("Gold") ||
-               tier.equalsIgnoreCase("Platinum");
-    }
-
-    public ArrayList<MemberUser> getAllMembers() {
-        return memberList;
     }
 
     public boolean deleteMember(String phoneNo) {
@@ -57,5 +31,29 @@ public class MembershipManager {
             }
         }
         return false;
+    }
+
+    public ArrayList<MemberUser> getAllMembers() {
+        return memberList;
+    }
+
+    public MemberUser findMemberByPhone(String phoneNo) {
+        for (MemberUser m : memberList) {
+            if (m.getPhoneNo().equals(phoneNo)) return m;
+        }
+        return null;
+    }
+
+    private boolean memberExists(String phoneNo) {
+        for (MemberUser m : memberList) {
+            if (m.getPhoneNo().equals(phoneNo)) return true;
+        }
+        return false;
+    }
+
+    private boolean isValidTier(String tier) {
+        return tier.equalsIgnoreCase("Silver") ||
+               tier.equalsIgnoreCase("Gold") ||
+               tier.equalsIgnoreCase("Platinum");
     }
 }

@@ -11,20 +11,13 @@ import java.util.Scanner;
  */
 public class UserManagementModule {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 
-        // Admin account (fixed)
         AdminUser admin = new AdminUser("admin", "admin123");
-
-        // Staff accounts
         ArrayList<StaffUser> staffList = new ArrayList<>();
         staffList.add(new StaffUser("staff1", "pass123"));
 
-        // Member manager
         MembershipManager membershipManager = new MembershipManager();
 
         boolean running = true;
@@ -36,7 +29,7 @@ public class UserManagementModule {
             System.out.println("3. Exit");
             System.out.print("Enter choice: ");
             int choice = input.nextInt();
-            input.nextLine(); // clear newline
+            input.nextLine();
 
             switch (choice) {
                 case 1:
@@ -59,9 +52,9 @@ public class UserManagementModule {
                     String staffPass = input.nextLine();
 
                     StaffUser loggedIn = null;
-                    for (StaffUser s : staffList) {
-                        if (s.getUsername().equals(staffUser) && s.checkPassword(staffPass)) {
-                            loggedIn = s;
+                    for (StaffUser staff : staffList) {
+                        if (staff.getUsername().equals(staffUser) && staff.checkPassword(staffPass)) {
+                            loggedIn = staff;
                             break;
                         }
                     }
@@ -86,7 +79,6 @@ public class UserManagementModule {
         input.close();
     }
 
-    // Admin Menu Logic
     private static void handleAdminMenu(Scanner input, ArrayList<StaffUser> staffList) {
         boolean adminActive = true;
         while (adminActive) {
@@ -109,21 +101,21 @@ public class UserManagementModule {
                         }
                     }
                     break;
-                    
+
                 case 2:
                     System.out.print("Enter new staff username: ");
                     String newUsername = input.nextLine();
                     System.out.print("Enter new staff password: ");
                     String newPassword = input.nextLine();
-                    
-                    //Check for duplicate username
+
                     boolean exists = false;
-                    for(User user : staffList){
-                        if (user.getUsername().equals(newUsername)){
+                    for (User user : staffList) {
+                        if (user.getUsername().equals(newUsername)) {
                             exists = true;
                             break;
                         }
                     }
+
                     if (exists) {
                         System.out.println("Staff username already exists.");
                     } else {
@@ -131,18 +123,20 @@ public class UserManagementModule {
                         System.out.println("Staff added successfully.");
                     }
                     break;
-                    
+
                 case 3:
                     System.out.print("Enter staff username to delete: ");
                     String deleteUsername = input.nextLine();
                     boolean removed = false;
-                    for(int i = 0; i<staffList.size(); i++){
-                        if(staffList.get(i).getUsername().equals(deleteUsername)){
+                    for (int i = 0; i < staffList.size(); i++) {
+                        if (staffList.get(i).getUsername().equals(deleteUsername)) {
                             staffList.remove(i);
                             removed = true;
                             break;
                         }
                     }
+                    System.out.println(removed ? "Staff deleted." : "Staff not found.");
+                    break;
 
                 case 4:
                     adminActive = false;
@@ -155,53 +149,26 @@ public class UserManagementModule {
         }
     }
 
-    // Staff Menu Logic
     private static void handleStaffMenu(Scanner input, StaffUser staff, MembershipManager manager) {
         boolean staffActive = true;
         while (staffActive) {
             System.out.println("\n=== Staff Menu ===");
-            System.out.println("1. Add Member");
-            System.out.println("2. View Members");
-            System.out.println("3. Delete Member");
+            System.out.println("1. Manage Members");
+            System.out.println("2. Purchase (Coming Soon)");
+            System.out.println("3. Inventory (Coming Soon)");
             System.out.println("4. Logout");
             System.out.print("Enter choice: ");
             int choice = input.nextInt();
             input.nextLine();
 
             switch (choice) {
-                case 1: //Add Member
-                   boolean added = false;
-                   while(!added){
-                       System.out.print("Enter name: ");
-                       String name = input.nextLine();
-                       System.out.print("Enter phone: ");
-                       String phone = input.nextLine();
-                       System.out.print("Enter tier (Silver/Gold/Platinum): ");
-                       String tier = input.nextLine();
-                       
-                       added = manager.addMember(name, phone, tier);
-                       if(added){
-                           System.out.println("Member added successfully.\n");
-                       } else {
-                           System.out.println("Member already exists or invalid tier.");
-                       }
-                   }
-                case 2:
-                    ArrayList<MemberUser> members = manager.getAllMembers();
-                    if (members.isEmpty()) {
-                        System.out.println("No members T^T.");
-                    } else {
-                        for (MemberUser m : members) {
-                            System.out.println(m);
-                        }
-                    }
+                case 1:
+                    handleMemberSubmenu(input, manager);
                     break;
 
+                case 2:
                 case 3:
-                    System.out.print("Enter phone to delete: ");
-                    String delPhone = input.nextLine();
-                    boolean deleted = manager.deleteMember(delPhone);
-                    System.out.println(deleted ? "Member deleted." : "Member not found.");
+                    System.out.println("Module coming soon.");
                     break;
 
                 case 4:
@@ -210,11 +177,79 @@ public class UserManagementModule {
                     break;
 
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println("Invalid input.");
+            }
+        }
+    }
+
+    private static void handleMemberSubmenu(Scanner input, MembershipManager manager) {
+        boolean active = true;
+        while (active) {
+            System.out.println("\n--- Manage Members ---");
+            System.out.println("1. Add Member");
+            System.out.println("2. View Members");
+            System.out.println("3. Delete Member");
+            System.out.println("4. Back");
+            System.out.print("Enter choice: ");
+            int choice = input.nextInt();
+            input.nextLine();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter phone number: ");
+                    String phone = input.nextLine();
+                    if (manager.findMemberByPhone(phone) != null) {
+                        System.out.println("Member with this phone number already exists.");
+                        break;
+                    }
+
+                    System.out.print("Enter name: ");
+                    String name = input.nextLine();
+
+                    String tier;
+                    boolean validTier;
+                    do {
+                        System.out.print("Enter tier (Silver/Gold/Platinum): ");
+                        tier = input.nextLine();
+                        validTier = tier.equalsIgnoreCase("Silver") ||
+                                    tier.equalsIgnoreCase("Gold") ||
+                                    tier.equalsIgnoreCase("Platinum");
+                        if (!validTier) {
+                            System.out.println("Invalid tier.");
+                        }
+                    } while (!validTier);
+
+                    boolean added = manager.addMember(name, phone, tier);
+                    System.out.println(added ? "Member added!" : " Failed to add.");
+                    break;
+
+                case 2:
+                    ArrayList<MemberUser> members = manager.getAllMembers();
+                    if (members.isEmpty()) {
+                        System.out.println("No members found.");
+                    } else {
+                        for (MemberUser member : members) {
+                            System.out.println(member);
+                        }
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Enter phone number to delete: ");
+                    String delPhone = input.nextLine();
+                    boolean deleted = manager.deleteMember(delPhone);
+                    System.out.println(deleted ? "Member deleted." : "Member not found.");
+                    break;
+
+                case 4:
+                    active = false;
+                    break;
+
+                default:
+                    System.out.println("Invalid input.");
             }
         }
     }
 }
-    
     
 
